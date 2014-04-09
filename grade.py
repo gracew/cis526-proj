@@ -3,8 +3,8 @@ import optparse
 import sys
 
 optparser = optparse.OptionParser()
-optparser.add_option("-r", "--ref", dest="ref", help="")
-optparser.add_option("-t", "--test", dest="test", help="")
+optparser.add_option("-r", "--ref", dest="ref", default="data/solution")
+optparser.add_option("-t", "--test", dest="test")
 opts = optparser.parse_args()[0]
 
 ref  = [line.strip() for line in open(opts.ref).readlines()]
@@ -16,6 +16,7 @@ if len(ref) != len(test):
     sys.exit(1)
 
 for (r, t) in zip(ref, test):
+    print r, t
     if r == t:
 	grade += 1
 
