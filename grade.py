@@ -16,7 +16,7 @@ if len(ref) != len(test):
     sys.exit(1)
 
 for (r, t) in zip(ref, test):
-    print r, t
+    # print r, t
     if r == t:
 	grade += 1
 
