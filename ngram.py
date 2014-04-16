@@ -33,7 +33,6 @@ def create_profile(text):
     ordered = sorted(freq.iteritems(), key=operator.itemgetter(1), reverse=True)
     return [(ngram, i) for i, (ngram, count) in enumerate(ordered)]
 
-# frequencies maps from language --> probability of each word in that language
 lang_map = {}
 
 for file in glob.glob(opts.data + "/*"):
@@ -57,7 +56,6 @@ for i, line in enumerate(open(opts.test)):
         distance = 0
         for (ngram, i) in profile:
             if ngram in lang_map[lang]:
-                # print "rank in line profile: %d, rank in lang profile: %d" % (i, lang_map[lang][ngram])
                 distance += min(abs(lang_map[lang][ngram] - i),max_penalty)
             else:
                 distance += max_penalty
