@@ -12,7 +12,7 @@ optparser.add_option("-d", "--data", dest="data", default="data/train")
 optparser.add_option("-t", "--test", dest="test", default="data/test")
 opts = optparser.parse_args()[0]
 
-# k is maximum context
+# k is maximum context, adjustable
 k = 2
 
 # map from language name --> predictions map
@@ -20,6 +20,8 @@ lang_map = {}
 lm = defaultdict(lambda: defaultdict(float))
 
 def calculate_space(context, x, index):
+    if len(context) > k:
+        calculate_space(context[-k:], x, index)
     if lm[context][x]:
         return lm[context][x]
     elif context == '':
@@ -30,7 +32,7 @@ def calculate_space(context, x, index):
         else:
             return lm[context]['esc'] * calculate_space(context[1:], x, index)
 
-# create markov models for each language
+# create language models for each language
 for file in glob.glob(opts.data + "/*"):
     lang_name = os.path.basename(file)
     alpha = len(Counter(open(file).read().lower()).keys())
@@ -53,12 +55,10 @@ for file in glob.glob(opts.data + "/*"):
         lang_map[lang_name] = prediction
         lang_map[lang_name]['alpha'] = alpha
 
-# for context in lang_map['abc']:
-    # print 'context', context, 'prediction', lang_map['abc'][context]
-
-# print 'finished creating language models\n'
 
 for idx, line in enumerate(open(opts.test)):
+    if idx % 50 == 0:
+        sys.stderr.write("%s\n" % idx)
     line = line.lower().strip().replace(' ', '')
     lowest_ent = 100.0
     lang_guess = ''
